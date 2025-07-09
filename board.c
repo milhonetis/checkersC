@@ -14,15 +14,15 @@ void drawBoard(char (*board)[COLUMNS])
 
     // Fill each line with the '-' character and each
     // columns with the '|' character
-    for(lineDraw=0; lineDraw<LINES; lineDraw++)
+    for(lineDraw=FIRST_CELL_LINE_AND_COL; lineDraw<LINES; lineDraw++)
     {
-        for(colDraw = 0; colDraw < COLUMNS; colDraw++)
+        for(colDraw = FIRST_CELL_LINE_AND_COL; colDraw < COLUMNS; colDraw++)
         {
-            if(lineDraw %2 == 0)
+            if(lineDraw % PIECE_PLACE_INC == VALID_DRAW_SPACE)
             {
                 board[lineDraw][colDraw] = '-';
             }
-            if(colDraw%2 == 0 && lineDraw%2 != 0)
+            if(colDraw % PIECE_PLACE_INC == VALID_DRAW_SPACE && lineDraw % PIECE_PLACE_INC != VALID_DRAW_SPACE)
             {
                 board[lineDraw][colDraw] = '|';
             }
@@ -35,17 +35,17 @@ void printBoard(char (*board)[COLUMNS])
     int lineDraw, colDraw;
 
     printf("    ");
-    for(colDraw = 0; colDraw < COLUMNS; colDraw++)
+    for(colDraw = FIRST_CELL_LINE_AND_COL; colDraw < COLUMNS; colDraw++)
     {
         printf("C%-3d", colDraw);
     }
     printf("\n");
     // Iterate through each line and column and print the character
 
-    for(lineDraw=0; lineDraw < LINES; lineDraw++)
+    for(lineDraw = FIRST_CELL_LINE_AND_COL; lineDraw < LINES; lineDraw++)
     {
         printf("L%-3d ", lineDraw);
-        for(colDraw = 0; colDraw < COLUMNS; colDraw++)
+        for(colDraw = FIRST_CELL_LINE_AND_COL; colDraw < COLUMNS; colDraw++)
         {
             printf("%s", displayChar(board[lineDraw][colDraw]));
         }
@@ -88,14 +88,14 @@ void fillBoard(char (*board)[COLUMNS], char color)
     // Since the board has bigger dimensions than 8x8 to accomodate for better graphic
     // understaindg, the offsets for each for loop have to differ a bit than the normal
     // incrementations.
-    for(lineDraw = 1; lineDraw < THEIR_PIECES; (lineDraw = lineDraw + 2))
+    for(lineDraw = FIRST_LINE; lineDraw < THEIR_PIECES; (lineDraw = lineDraw + PIECE_PLACE_INC))
     {
         static int linePut = 0;
         static int alternate = 3;
-        for(colDraw = 1; colDraw < COLUMNS; (colDraw = colDraw + 4))
+        for(colDraw = FIRST_COL; colDraw < COLUMNS; (colDraw = colDraw + COL_INC))
         {
-            if(linePut % 2 != 0 && (colDraw + 2 < COLUMNS))
-                board[lineDraw][colDraw + 2] = playerTwo;
+            if(linePut % PIECE_PLACE_INC != INVALID_CELL && (colDraw + PIECE_PLACE_INC < COLUMNS))
+                board[lineDraw][colDraw + CELL_INC] = playerTwo;
             else
                 board[lineDraw][colDraw] = playerTwo;
         }
@@ -110,10 +110,10 @@ void fillBoard(char (*board)[COLUMNS], char color)
     {
         static int linePut = 0;
         static int alternate = 3;
-        for(colDraw = 1; colDraw < COLUMNS; (colDraw = colDraw + 4))
+        for(colDraw = FIRST_COL; colDraw < COLUMNS; (colDraw = colDraw + COL_INC))
         {
-            if(linePut % 2 != 0)
-                board[lineDraw][colDraw + 2] = playerOne;
+            if(linePut % PIECE_PLACE_INC != INVALID_CELL)
+                board[lineDraw][colDraw + CELL_INC] = playerOne;
             else 
                 board[lineDraw][colDraw] = playerOne;
         }
@@ -127,6 +127,8 @@ int makeAMove(char (*board)[COLUMNS], int linefrom, int colfrom, int lineto, int
     int result;
     if(validMove)
     {
+        // Fill new spot with piece and delete the position where piece was
+        // previously
         board[lineto][colto] = board[linefrom][colfrom];
         board[linefrom][colfrom] = '\0';
         result = SUCCESS;
@@ -138,7 +140,7 @@ int makeAMove(char (*board)[COLUMNS], int linefrom, int colfrom, int lineto, int
 
 int validateMove(char (*board)[COLUMNS], int linefrom, int lineto, int colfrom, int colto, char player)
 {
-    int isValid = 0;
+    int isValid = FAIL;
     char playerType;
 
     if(player == 'w')
@@ -153,13 +155,13 @@ int validateMove(char (*board)[COLUMNS], int linefrom, int lineto, int colfrom, 
     // their final position
     if((board[linefrom][colfrom] == playerType) && playerType == playerOne)
     {
-       if(linefrom - lineto == 2)
-            isValid = 1; 
+       if(linefrom - lineto == PIECE_PLACE_INC)
+            isValid = SUCCESS; 
     }
     else if ((board[linefrom][colfrom] == playerType)  && playerType == playerTwo)
     {
-       if(lineto - linefrom == 2)
-            isValid = 1; 
+       if(lineto - linefrom == PIECE_PLACE_INC)
+            isValid = SUCCESS; 
     }
 
 

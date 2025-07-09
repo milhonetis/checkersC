@@ -4,6 +4,13 @@
 // Macro and global variable definition
 #define COLUMNS 17
 #define LINES 17
+#define FIRST_COL 1
+#define COL_INC 4
+#define PIECE_PLACE_INC 2
+#define CELL_INC 2
+#define FIRST_CELL_LINE_AND_COL 0
+#define VALID_DRAW_SPACE 0
+#define INVALID_CELL 0
 
 #define THEIR_PIECES 6
 #define OWN_PIECES 11
