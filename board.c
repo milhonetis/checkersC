@@ -18,11 +18,11 @@ void drawBoard(char (*board)[COLUMNS])
     {
         for(colDraw = FIRST_CELL_LINE_AND_COL; colDraw < COLUMNS; colDraw++)
         {
-            if(lineDraw % PIECE_PLACE_INC == VALID_DRAW_SPACE)
+            if(lineDraw % CELL_INC == VALID_DRAW_SPACE)
             {
                 board[lineDraw][colDraw] = '-';
             }
-            if(colDraw % PIECE_PLACE_INC == VALID_DRAW_SPACE && lineDraw % PIECE_PLACE_INC != VALID_DRAW_SPACE)
+            if(colDraw % CELL_INC == VALID_DRAW_SPACE && lineDraw % CELL_INC != VALID_DRAW_SPACE)
             {
                 board[lineDraw][colDraw] = '|';
             }
@@ -88,13 +88,13 @@ void fillBoard(char (*board)[COLUMNS], char color)
     // Since the board has bigger dimensions than 8x8 to accomodate for better graphic
     // understaindg, the offsets for each for loop have to differ a bit than the normal
     // incrementations.
-    for(lineDraw = FIRST_LINE; lineDraw < THEIR_PIECES; (lineDraw = lineDraw + PIECE_PLACE_INC))
+    for(lineDraw = FIRST_LINE; lineDraw < THEIR_PIECES; (lineDraw = lineDraw + CELL_INC))
     {
         static int linePut = 0;
         static int alternate = 3;
         for(colDraw = FIRST_COL; colDraw < COLUMNS; (colDraw = colDraw + COL_INC))
         {
-            if(linePut % PIECE_PLACE_INC != INVALID_CELL && (colDraw + PIECE_PLACE_INC < COLUMNS))
+            if(linePut % CELL_INC != INVALID_CELL && (colDraw + CELL_INC < COLUMNS))
                 board[lineDraw][colDraw + CELL_INC] = playerTwo;
             else
                 board[lineDraw][colDraw] = playerTwo;
@@ -112,7 +112,7 @@ void fillBoard(char (*board)[COLUMNS], char color)
         static int alternate = 3;
         for(colDraw = FIRST_COL; colDraw < COLUMNS; (colDraw = colDraw + COL_INC))
         {
-            if(linePut % PIECE_PLACE_INC != INVALID_CELL)
+            if(linePut % CELL_INC != INVALID_CELL)
                 board[lineDraw][colDraw + CELL_INC] = playerOne;
             else 
                 board[lineDraw][colDraw] = playerOne;
@@ -155,12 +155,12 @@ int validateMove(char (*board)[COLUMNS], int linefrom, int lineto, int colfrom, 
     // their final position
     if((board[linefrom][colfrom] == playerType) && playerType == playerOne)
     {
-       if(linefrom - lineto == PIECE_PLACE_INC)
+       if(linefrom - lineto == CELL_INC)
             isValid = SUCCESS; 
     }
     else if ((board[linefrom][colfrom] == playerType)  && playerType == playerTwo)
     {
-       if(lineto - linefrom == PIECE_PLACE_INC)
+       if(lineto - linefrom == CELL_INC)
             isValid = SUCCESS; 
     }
 
