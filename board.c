@@ -125,7 +125,7 @@ int makeAMove(char (*board)[COLUMNS], int linefrom, int colfrom, int lineto, int
 {
     int validMove = validateMove(board, linefrom, lineto, colfrom, colto, player);
     int result;
-    if(validMove)
+    if(validMove == SUCCESS)
     {
         // Fill new spot with piece and delete the position where piece was
         // previously
@@ -133,8 +133,11 @@ int makeAMove(char (*board)[COLUMNS], int linefrom, int colfrom, int lineto, int
         board[linefrom][colfrom] = '\0';
         result = SUCCESS;
     }
+    else if(validMove == DIAGONAL)
+    {
+        result = SUCCESS;
+    }
     else result = FAIL;
-
     return result;
 }
 
@@ -155,15 +158,45 @@ int validateMove(char (*board)[COLUMNS], int linefrom, int lineto, int colfrom, 
     // their final position
     if((board[linefrom][colfrom] == playerType) && playerType == playerOne)
     {
-       if(linefrom - lineto == CELL_INC)
+       if((linefrom - lineto == CELL_INC) && (colfrom - colto == VALID_DRAW_SPACE))
             isValid = SUCCESS; 
     }
     else if ((board[linefrom][colfrom] == playerType)  && playerType == playerTwo)
     {
-       if(lineto - linefrom == CELL_INC)
+       if((lineto - linefrom == CELL_INC) && (colto - colfrom == VALID_DRAW_SPACE))
             isValid = SUCCESS; 
     }
 
+    // PLAYER ONE capture logic (moving up)
+    if (board[linefrom][colfrom] == playerOne &&
+        board[lineto][colto] == '\0' &&
+        linefrom - lineto == 2 * CELL_INC &&
+        (colfrom - colto == 2 * CELL_INC || colto - colfrom == 2 * CELL_INC)) {
+
+        int midLine = linefrom - CELL_INC;
+        int midCol = (colto > colfrom) ? colfrom + CELL_INC : colfrom - CELL_INC;
+        if (board[midLine][midCol] == playerTwo) {
+            board[lineto][colto] = playerOne;
+            board[midLine][midCol] = '\0';  // remove eaten piece
+            board[linefrom][colfrom] = '\0'; // move from
+            isValid = DIAGONAL;
+        }
+    }
+
+    // PLAYER TWO capture logic (moving down)
+    else if (board[linefrom][colfrom] == playerTwo &&
+         board[lineto][colto] == '\0' &&
+         lineto - linefrom == 2 * CELL_INC &&
+         (colfrom - colto == 2 * CELL_INC || colto - colfrom == 2 * CELL_INC)) {
+            int midLine = linefrom + CELL_INC;
+            int midCol = (colto > colfrom) ? colfrom + CELL_INC : colfrom - CELL_INC;
+            if (board[midLine][midCol] == playerOne) {
+                board[lineto][colto] = playerTwo;
+                board[midLine][midCol] = '\0';  // remove eaten piece
+                board[linefrom][colfrom] = '\0'; // move from
+                isValid = DIAGONAL;
+        }
+    }
 
     return isValid;
 }

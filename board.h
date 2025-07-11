@@ -11,10 +11,13 @@
 #define FIRST_CELL_LINE_AND_COL 0
 #define VALID_DRAW_SPACE 0
 #define INVALID_CELL 0
+#define DIAGONAL_MOVE_P1 2
+#define DIAGONAL_MOVE_P2 2
 
 #define THEIR_PIECES 6
 #define OWN_PIECES 11
 
+#define DIAGONAL 2
 #define SUCCESS 1
 #define FAIL -1
 
